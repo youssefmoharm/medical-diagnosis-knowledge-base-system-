@@ -1,4 +1,4 @@
-# MedTriage Expert System — KBS Phase 4 + Phase 5
+# MedTriage Expert System 
 
 ## Quick Start
 **Windows:** Double-click `start.bat`
