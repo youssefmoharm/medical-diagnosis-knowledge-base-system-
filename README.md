@@ -5,7 +5,7 @@
 **Mac/Linux:** `chmod +x start.sh && ./start.sh`
 **Manual:** `pip install flask flask-cors` then `python server.py`
 
-Open **http://localhost:5000** — the Evaluation section is built into the UI under the EVALUATION nav link.
+
 
 ## Structure
 - `server.py` — Flask server
