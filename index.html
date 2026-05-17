@@ -1,0 +1,2402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEDTRIAGE EXPERT SYSTEM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #050A0E;
+            --neon-green: #00FF9C;
+            --critical-red: #FF0040;
+            --high-orange: #FF8C00;
+            --medium-yellow: #FFD700;
+            --low-green: #00FF9C;
+            --text-muted: #8B9BA8;
+            --card-bg: #0A1419;
+            --border-color: #1A2F3A;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--bg-dark);
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(5, 10, 14, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--neon-green);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-green);
+        }
+
+        .btn-access {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 156, 0.3);
+        }
+
+        .btn-access:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 156, 0.6);
+            transform: translateY(-2px);
+        }
+
+        section {
+            padding: 6rem 5%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 156, 0.03) 0px,
+                transparent 1px,
+                transparent 2px,
+                rgba(0, 255, 156, 0.03) 3px
+            );
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 255, 156, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--neon-green);
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2rem;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 255, 156, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 156, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 255, 156, 0.1);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-item {
+            border-left: 2px solid var(--neon-green);
+            padding-left: 1rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            color: var(--neon-green);
+            font-weight: 700;
+        }
+
+        .terminal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-green);
+            padding: 2rem;
+            box-shadow: 0 0 30px rgba(0, 255, 156, 0.2);
+            position: relative;
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .terminal-title {
+            font-size: 0.85rem;
+            color: var(--neon-green);
+            letter-spacing: 2px;
+        }
+
+        .terminal-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .rule-evaluation {
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .rule-line {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--neon-green);
+            width: 0;
+            animation: progress 2s ease-in-out forwards;
+        }
+
+        @keyframes progress {
+            to { width: 100%; }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+            color: var(--neon-green);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 4rem;
+        }
+
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .arch-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .arch-card:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 30px rgba(0, 255, 156, 0.2);
+        }
+
+        .arch-card h3 {
+            color: var(--neon-green);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .arch-card p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 0.9rem;
+        }
+
+        .pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            padding: 0 2rem;
+        }
+
+        .pipeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s;
+        }
+
+        .pipeline-step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--neon-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--neon-green);
+            background: var(--card-bg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-title {
+            font-size: 1rem;
+            color: var(--neon-green);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .pipeline-connector {
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                to right,
+                var(--border-color) 0px,
+                var(--border-color) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .pipeline-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            top: -4px;
+            left: 0;
+            box-shadow: 0 0 15px var(--neon-green);
+            animation: travel 4s ease-in-out infinite;
+        }
+
+        @keyframes travel {
+            0% { 
+                left: 0; 
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% { 
+                left: calc(100% - 10px);
+                opacity: 0.5;
+            }
+        }
+
+        .diagnostic-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .panel-column {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+        }
+
+        .panel-title {
+            color: var(--neon-green);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        .input-section h4 {
+            color: var(--neon-green);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group, .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--neon-green);
+        }
+
+        .checkbox-item label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .input-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-item label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .input-item input[type="number"] {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: #FFFFFF;
+            padding: 0.75rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .input-item input[type="number"]:focus {
+            outline: none;
+            border-color: var(--neon-green);
+        }
+
+        .btn-run {
+            width: 100%;
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            padding: 1rem;
+            border: none;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 156, 0.3);
+        }
+
+        .btn-run:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 156, 0.6);
+        }
+
+        .btn-run:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .output-section {
+            margin-bottom: 2rem;
+        }
+
+        .urgency-badge {
+            display: inline-block;
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .urgency-critical {
+            background: rgba(255, 0, 64, 0.2);
+            border: 2px solid var(--critical-red);
+            color: var(--critical-red);
+            box-shadow: 0 0 30px rgba(255, 0, 64, 0.4);
+        }
+
+        .urgency-high {
+            background: rgba(255, 140, 0, 0.2);
+            border: 2px solid var(--high-orange);
+            color: var(--high-orange);
+            box-shadow: 0 0 30px rgba(255, 140, 0, 0.4);
+        }
+
+        .urgency-medium {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid var(--medium-yellow);
+            color: var(--medium-yellow);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .urgency-low {
+            background: rgba(0, 255, 156, 0.2);
+            border: 2px solid var(--low-green);
+            color: var(--low-green);
+            box-shadow: 0 0 30px rgba(0, 255, 156, 0.4);
+        }
+
+        .confidence-score {
+            font-size: 3rem;
+            color: var(--neon-green);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .diagnosis-name {
+            font-size: 1.5rem;
+            color: var(--neon-green);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .action-text {
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .alternatives {
+            margin-top: 2rem;
+        }
+
+        .alternatives h4 {
+            color: var(--neon-green);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .alt-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alt-diagnosis {
+            color: #FFFFFF;
+            font-size: 0.9rem;
+        }
+
+        .alt-confidence {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .reasoning-terminal {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .reasoning-line {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: typewriter 0.3s forwards;
+        }
+
+        @keyframes typewriter {
+            to { opacity: 1; }
+        }
+
+        .reasoning-line.step { color: #6B8E7F; }
+        .reasoning-line.match { color: var(--neon-green); }
+        .reasoning-line.conflict { color: #00D9FF; }
+        .reasoning-line.result { color: #FFFFFF; font-weight: 700; }
+        .reasoning-line.urgency { color: var(--critical-red); }
+        .reasoning-line.confidence { color: var(--medium-yellow); }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--neon-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--neon-green);
+            margin-top: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .error-banner {
+            background: rgba(255, 0, 64, 0.2);
+            border: 2px solid var(--critical-red);
+            color: var(--critical-red);
+            padding: 1rem;
+            text-align: center;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .knowledge-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        .knowledge-table th {
+            background: var(--bg-dark);
+            color: var(--neon-green);
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .knowledge-table td {
+            padding: 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .knowledge-table tr:hover {
+            background: rgba(0, 255, 156, 0.05);
+        }
+
+        .table-footer {
+            background: var(--bg-dark);
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Inference Overlay Styles */
+        .inference-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inference-overlay.hidden {
+            display: none;
+        }
+
+        .inference-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .ecg-canvas {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 120px;
+            z-index: 110;
+        }
+
+        .status-text {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            color: #00ff88;
+            z-index: 120;
+            text-align: center;
+        }
+
+        .status-text.processing {
+            animation: blink 1s infinite;
+        }
+
+        .status-text.complete {
+            color: #00ff88;
+            animation: none;
+        }
+
+        .status-text.error {
+            color: var(--critical-red);
+            animation: none;
+        }
+
+        .floating-panels {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 2rem;
+            z-index: 120;
+            width: 90%;
+            max-width: 1400px;
+            align-items: flex-start;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .floating-panel {
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.08);
+            padding: 2rem;
+            max-width: 500px;
+            max-height: 70vh;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease;
+        }
+
+        .floating-panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .floating-panel::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-panel::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+        }
+
+        .floating-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 136, 0.5);
+        }
+
+        .diagnosis-panel {
+            flex: 1;
+        }
+
+        .reasoning-panel {
+            flex: 1;
+        }
+
+        .close-overlay-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 50%;
+            color: #00ff88;
+            font-size: 2rem;
+            font-weight: 300;
+            cursor: pointer;
+            z-index: 120;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-family: 'Space Mono', monospace;
+            line-height: 1;
+        }
+
+        .close-overlay-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Hide default output panels when overlay is active */
+        .diagnostic-panel .panel-column:nth-child(2),
+        .diagnostic-panel .panel-column:nth-child(3) {
+            display: none;
+        }
+
+        .diagnostic-panel {
+            grid-template-columns: 1fr;
+        }
+
+        @media (max-width: 1024px) {
+            .hero, .diagnostic-panel {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+            .floating-panels {
+                flex-direction: column;
+                width: 95%;
+                margin-top: 2rem;
+            }
+            .floating-panel {
+                max-width: 100%;
+                max-height: 50vh;
+            }
+            .ecg-canvas {
+                width: 95%;
+                height: 150px;
+            }
+            .status-text {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .floating-panel {
+                transition: none;
+            }
+            .status-text.processing {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">MEDTRIAGE EXPERT SYSTEM</div>
+        <ul class="nav-links">
+            <li><a href="#diagnostics">DIAGNOSTICS</a></li>
+            <li><a href="#pipeline">PIPELINE</a></li>
+            <li><a href="#knowledge">KNOWLEDGE BASE</a></li>
+            <li><a href="#demo">LIVE DEMO</a></li>
+            <li><a href="#evaluation">EVALUATION</a></li>
+        </ul>
+        <button class="btn-access" onclick="document.getElementById('demo').scrollIntoView({behavior: 'smooth'})">SYSTEM ACCESS</button>
+    </nav>
+
+    <section class="hero" id="home">
+        <div>
+            <div class="badge">SYSTEM_VERSION_1.0_READY</div>
+            <h1>MEDICAL TRIAGE<br>INTELLIGENCE<span class="cursor">_</span></h1>
+            <p class="subtitle">Rule-based clinical expert system using forward-chaining inference. Inspired by MYCIN. Built for real triage decisions.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior: 'smooth'})">INITIALIZE_TRAUMA_PROTOCOL</button>
+                <button class="btn-secondary" onclick="document.getElementById('pipeline').scrollIntoView({behavior: 'smooth'})">VIEW_ALGORITHMS</button>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">INFERENCE_STATE</div>
+                    <div class="stat-value" id="stat-engine">ENGINE ACTIVE</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">RULES_LOADED</div>
+                    <div class="stat-value" id="stat-rules">10</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">URGENCY_LEVELS</div>
+                    <div class="stat-value" id="stat-urgency">4</div>
+                </div>
+            </div>
+        </div>
+        <div class="terminal-card">
+            <div class="terminal-header">
+                <div class="terminal-title">RULE_EVALUATION_MONITOR</div>
+                <div class="terminal-status">LIVE</div>
+            </div>
+            <div class="rule-evaluation" id="rule-monitor"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="diagnostics">
+        <div style="width: 100%;">
+            <h2 class="section-title">SYSTEM_ARCHITECTURE</h2>
+            <p class="section-subtitle">FIVE_CORE_COMPONENTS</p>
+            <div class="architecture-grid">
+                <div class="arch-card" data-tilt>
+                    <h3>KNOWLEDGE BASE</h3>
+                    <p>10 IF-THEN production rules with confidence scores covering 10 medical conditions.</p>
+                </div>
+                <div class="arch-card" data-tilt>
+                    <h3>WORKING MEMORY</h3>
+                    <p>Temporary session store for patient symptoms, vitals, and medical history facts.</p>
+                </div>
+                <div class="arch-card" data-tilt>
+                    <h3>INFERENCE ENGINE</h3>
+                    <p>Forward-chaining processor that evaluates all rules and fires all matches.</p>
+                </div>
+                <div class="arch-card" data-tilt>
+                    <h3>EXPLANATION MODULE</h3>
+                    <p>Generates WHY (which facts triggered which rule) and HOW (step-by-step reasoning trace) explanations.</p>
+                </div>
+                <div class="arch-card" data-tilt>
+                    <h3>TRIAGE API</h3>
+                    <p>Public interface: triage(symptoms, vitals, history) → diagnosis + urgency + action + explanations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pipeline">
+        <div style="width: 100%;">
+            <h2 class="section-title">PROCESSING PIPELINE</h2>
+            <p class="section-subtitle">FROM_RAW_DATA_TO_CRITICAL_ACTION</p>
+            <div class="pipeline">
+                <div class="pipeline-connector">
+                    <div class="pipeline-dot"></div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-number">01</div>
+                    <div class="step-title">USER INPUT</div>
+                    <div class="step-desc">symptoms + vitals + history</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-number">02</div>
+                    <div class="step-title">PATTERN MATCHING</div>
+                    <div class="step-desc">all 10 rules evaluated</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-number">03</div>
+                    <div class="step-title">CONFLICT RESOLUTION</div>
+                    <div class="step-desc">urgency-first, then confidence</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-number">04</div>
+                    <div class="step-title">OUTPUT</div>
+                    <div class="step-desc">diagnosis + action + WHY/HOW explanation</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo">
+        <div style="width: 100%;">
+            <h2 class="section-title">DIAGNOSTIC SIMULATION</h2>
+            <p class="section-subtitle">LIVE_INFERENCE_ENGINE</p>
+            <div id="error-container"></div>
+            <div class="diagnostic-panel">
+                <div class="panel-column">
+                    <div class="panel-title">PATIENT_INPUT_MODULE</div>
+                    
+                    <div class="input-section">
+                        <h4>SYMPTOMS</h4>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="fever" name="fever">
+                                <label for="fever">Fever</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="cough" name="cough">
+                                <label for="cough">Cough</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="shortness_of_breath" name="shortness_of_breath">
+                                <label for="shortness_of_breath">Shortness of Breath</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="chest_pain" name="chest_pain">
+                                <label for="chest_pain">Chest Pain</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="headache" name="headache">
+                                <label for="headache">Headache</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="fatigue" name="fatigue">
+                                <label for="fatigue">Fatigue</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="nausea" name="nausea">
+                                <label for="nausea">Nausea</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sore_throat" name="sore_throat">
+                                <label for="sore_throat">Sore Throat</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sweating" name="sweating">
+                                <label for="sweating">Sweating</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="dizziness" name="dizziness">
+                                <label for="dizziness">Dizziness</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="light_sensitivity" name="light_sensitivity">
+                                <label for="light_sensitivity">Light Sensitivity</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="abdominal_pain" name="abdominal_pain">
+                                <label for="abdominal_pain">Abdominal Pain</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-section">
+                        <h4>VITAL SIGNS</h4>
+                        <div class="input-group">
+                            <div class="input-item">
+                                <label for="heart_rate">Heart Rate (bpm) (40-200)</label>
+                                <input type="number" id="heart_rate" placeholder="e.g., 75" min="40" max="200">
+                            </div>
+                            <div class="input-item">
+                                <label for="spo2">SpO2 % (50-100)</label>
+                                <input type="number" id="spo2" placeholder="e.g., 98" min="50" max="100">
+                            </div>
+                            <div class="input-item">
+                                <label for="temperature">Temperature °C</label>
+                                <input type="number" id="temperature" step="0.1" placeholder="e.g., 37.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-section">
+                        <h4>MEDICAL HISTORY</h4>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="history_of_asthma" name="history_of_asthma">
+                                <label for="history_of_asthma">History of Asthma</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="history_of_heart_disease" name="history_of_heart_disease">
+                                <label for="history_of_heart_disease">History of Heart Disease</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-run" id="run-btn" onclick="runInference()">RUN_INFERENCE</button>
+                </div>
+
+                <div class="panel-column">
+                    <div class="panel-title">DIAGNOSIS_OUTPUT</div>
+                    <div id="output-content">
+                        <p style="color: var(--text-muted); text-align: center; padding: 3rem;">Awaiting patient data input...</p>
+                    </div>
+                </div>
+
+                <div class="panel-column">
+                    <div class="panel-title">REASONING_TRACE</div>
+                    <div class="reasoning-terminal" id="reasoning-content">
+                        <p style="color: var(--text-muted);">System ready. Execute inference to view reasoning trace...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="knowledge">
+        <div style="width: 100%;">
+            <h2 class="section-title">KNOWLEDGE BASE</h2>
+            <p class="section-subtitle">PRODUCTION_RULES</p>
+            <table class="knowledge-table" id="rules-table">
+                <thead>
+                    <tr>
+                        <th>RULE ID</th>
+                        <th>DIAGNOSIS</th>
+                        <th>URGENCY</th>
+                        <th>CONDITIONS</th>
+                        <th>CONFIDENCE</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="rules-tbody">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem;">Loading rules from API...</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table-footer" id="table-footer">
+                Loading...
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PHASE 5 — EVALUATION SECTION
+    ════════════════════════════════════════════════════════════════ -->
+    <style>
+        /* ── Evaluation Section ── */
+        #evaluation {
+            background: var(--bg-dark);
+            padding: 6rem 5%;
+            min-height: auto;
+            display: block;
+            align-items: unset;
+            justify-content: unset;
+        }
+        .eval-container { max-width: 1100px; margin: 0 auto; }
+
+        .eval-tabs {
+            display: flex; gap: 0; margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .eval-tab {
+            background: none; border: none; color: var(--text-muted);
+            font-family: 'Space Mono', monospace; font-size: 0.78rem;
+            letter-spacing: 1px; padding: 0.75rem 1.4rem; cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all 0.2s;
+        }
+        .eval-tab.active { color: var(--neon-green); border-bottom-color: var(--neon-green); }
+        .eval-tab:hover { color: #fff; }
+
+        .eval-panel { display: none; }
+        .eval-panel.active { display: block; }
+
+        /* Summary cards */
+        .eval-summary { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 12px; margin-bottom: 2.5rem; }
+        .eval-stat {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 18px 14px; text-align: center; position: relative; overflow: hidden;
+        }
+        .eval-stat::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+        .eval-stat.c-blue::before   { background: #3b82f6; }
+        .eval-stat.c-green::before  { background: var(--neon-green); }
+        .eval-stat.c-red::before    { background: var(--critical-red); }
+        .eval-stat.c-yellow::before { background: var(--medium-yellow); }
+        .eval-stat.c-purple::before { background: #8b5cf6; }
+        .eval-stat.c-cyan::before   { background: #06b6d4; }
+        .eval-stat-num  { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+        .eval-stat-lbl  { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 1px; }
+
+        /* Scenario cards */
+        .sc-list { display: flex; flex-direction: column; gap: 10px; }
+        .sc-item {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            overflow: hidden; transition: border-color 0.2s;
+        }
+        .sc-item:hover { border-color: #1e4060; }
+        .sc-head {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            cursor: pointer;
+        }
+        .sc-num { font-size: 0.7rem; color: var(--text-muted); min-width: 28px; }
+        .sc-name { flex: 1; font-size: 0.82rem; }
+        .sc-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+        .sc-chevron { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.2s; }
+        .sc-item.open .sc-chevron { transform: rotate(180deg); }
+
+        .sc-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border-color); }
+        .sc-item.open .sc-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 14px; }
+        @media(max-width:650px){ .sc-item.open .sc-body { grid-template-columns:1fr; } }
+
+        .sc-body h4 { font-size: 0.65rem; color: #06b6d4; letter-spacing: 1px; margin-bottom: 8px; }
+        .fact-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
+        .fact-chip {
+            font-size: 0.65rem; padding: 2px 7px;
+            background: rgba(0,255,156,0.07); border: 1px solid rgba(0,255,156,0.2);
+            color: var(--neon-green);
+        }
+        .diag-row {
+            display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+            border: 1px solid var(--border-color); margin-bottom: 5px; font-size: 0.78rem;
+        }
+        .diag-row.primary { border-color: rgba(0,255,156,0.25); background: rgba(0,255,156,0.04); }
+        .diag-name { flex: 1; }
+        .diag-rule { font-size: 0.65rem; color: var(--text-muted); }
+        .diag-conf { font-size: 0.65rem; color: var(--text-muted); }
+        .obs-box {
+            grid-column: 1/-1; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
+            padding: 10px 12px; font-size: 0.75rem; color: var(--text-muted); line-height: 1.7;
+        }
+        .obs-box span { color: var(--neon-green); font-weight: 700; }
+
+        /* Urgency badges */
+        .ubadge {
+            font-size: 0.62rem; padding: 2px 7px; letter-spacing: 1px; font-weight: 700;
+            border: 1px solid;
+        }
+        .ubadge.critical { color: var(--critical-red);    border-color: rgba(255,0,64,0.4);   background: rgba(255,0,64,0.1); }
+        .ubadge.high     { color: var(--high-orange);     border-color: rgba(255,140,0,0.4);  background: rgba(255,140,0,0.1); }
+        .ubadge.medium   { color: var(--medium-yellow);   border-color: rgba(255,215,0,0.4);  background: rgba(255,215,0,0.1); }
+        .ubadge.low      { color: var(--neon-green);      border-color: rgba(0,255,156,0.35); background: rgba(0,255,156,0.08); }
+        .ubadge.nomatch  { color: #6b7280;                border-color: rgba(107,114,128,0.35);background:rgba(107,114,128,0.1); }
+        .ubadge.error    { color: #8b5cf6;                border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.1); }
+        .ubadge.pass     { color: var(--neon-green);      border-color: rgba(0,255,156,0.35); background: rgba(0,255,156,0.08); }
+
+        /* Explanation terminal */
+        .eval-terminal {
+            grid-column: 1/-1; background: #020608; border: 1px solid var(--border-color);
+            padding: 12px 14px; font-family: 'Space Mono', monospace; font-size: 0.68rem;
+            color: var(--text-muted); white-space: pre-wrap; line-height: 1.8;
+            max-height: 180px; overflow-y: auto;
+        }
+        .eval-terminal .t-step   { color: #06b6d4; }
+        .eval-terminal .t-match  { color: var(--neon-green); }
+        .eval-terminal .t-result { color: var(--medium-yellow); }
+
+        /* Limitations */
+        .lim-list { display: flex; flex-direction: column; gap: 10px; }
+        .lim-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 16px; display: flex; gap: 14px;
+        }
+        .lim-icon { font-size: 1.4rem; flex-shrink: 0; }
+        .lim-card h4 { font-size: 0.8rem; margin-bottom: 5px; color: #fff; }
+        .lim-card p  { font-size: 0.75rem; color: var(--text-muted); line-height: 1.7; }
+
+        /* Analysis grid */
+        .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+        @media(max-width:650px){ .analysis-grid { grid-template-columns:1fr; } }
+        .analysis-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px;
+        }
+        .analysis-card h3 { font-size: 0.85rem; margin-bottom: 12px; color: var(--neon-green); letter-spacing: 1px; }
+        .analysis-card ul { padding-left: 16px; display: flex; flex-direction: column; gap: 7px; }
+        .analysis-card li { font-size: 0.75rem; color: var(--text-muted); line-height: 1.6; }
+        .analysis-card li strong { color: #fff; }
+
+        /* Conflict resolution */
+        .conflict-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; margin-bottom: 2rem; }
+        .conflict-card h3 { font-size: 0.85rem; color: var(--neon-green); letter-spacing: 1px; margin-bottom: 16px; }
+        .prio-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        .prio-row:last-child { border-bottom: none; }
+        .prio-num {
+            width: 26px; height: 26px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 0.7rem;
+            font-weight: 700; flex-shrink: 0;
+        }
+        .prio-num.p1 { background:rgba(255,0,64,0.15); color:var(--critical-red); border:1px solid rgba(255,0,64,0.4); }
+        .prio-num.p2 { background:rgba(59,130,246,0.15); color:#3b82f6; border:1px solid rgba(59,130,246,0.4); }
+        .prio-num.p3 { background:rgba(0,255,156,0.1); color:var(--neon-green); border:1px solid rgba(0,255,156,0.3); }
+        .prio-body h4 { font-size: 0.8rem; margin-bottom: 4px; }
+        .prio-body p  { font-size: 0.73rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* Rule coverage table inside eval */
+        .eval-table { width:100%; border-collapse:collapse; font-size:0.72rem; }
+        .eval-table th {
+            font-size: 0.65rem; letter-spacing: 1px; color: var(--text-muted);
+            text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border-color);
+        }
+        .eval-table td { padding: 9px 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); vertical-align: top; }
+        .eval-table tr:last-child td { border-bottom: none; }
+        .eval-table tr:hover td { background: rgba(0,255,156,0.02); }
+        .eval-table td:first-child { color: #3b82f6; font-weight: 700; }
+        .conf-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.06); position: relative; width: 70px; display:inline-block; vertical-align: middle; margin-right: 5px; }
+        .conf-fill { position:absolute; top:0; left:0; height:100%; border-radius:3px; background: var(--neon-green); }
+    </style>
+
+    <section id="evaluation">
+        <div class="eval-container">
+            <h2 class="section-title">PHASE 5 — EVALUATION</h2>
+            <p class="section-subtitle" style="margin-bottom:2rem">SYSTEM_TESTING_&amp;_ANALYSIS</p>
+
+            <!-- Tab bar -->
+            <div class="eval-tabs">
+                <button class="eval-tab active" onclick="switchTab('overview')">OVERVIEW</button>
+                <button class="eval-tab" onclick="switchTab('scenarios')">TEST SCENARIOS</button>
+                <button class="eval-tab" onclick="switchTab('explanation')">DECISION LOGIC</button>
+                <button class="eval-tab" onclick="switchTab('limitations')">LIMITATIONS</button>
+                <button class="eval-tab" onclick="switchTab('rules')">RULE COVERAGE</button>
+            </div>
+
+            <!-- ── TAB: OVERVIEW ── -->
+            <div class="eval-panel active" id="tab-overview">
+                <div class="eval-summary">
+                    <div class="eval-stat c-blue">
+                        <div class="eval-stat-num" style="color:#3b82f6">18</div>
+                        <div class="eval-stat-lbl">SCENARIOS TESTED</div>
+                    </div>
+                    <div class="eval-stat c-green">
+                        <div class="eval-stat-num" style="color:var(--neon-green)">11</div>
+                        <div class="eval-stat-lbl">RULES MATCHED</div>
+                    </div>
+                    <div class="eval-stat c-yellow">
+                        <div class="eval-stat-num" style="color:var(--medium-yellow)">5</div>
+                        <div class="eval-stat-lbl">NO-MATCH (CORRECT)</div>
+                    </div>
+                    <div class="eval-stat c-purple">
+                        <div class="eval-stat-num" style="color:#8b5cf6">2</div>
+                        <div class="eval-stat-lbl">ERRORS CAUGHT</div>
+                    </div>
+                    <div class="eval-stat c-red">
+                        <div class="eval-stat-num" style="color:var(--critical-red)">4</div>
+                        <div class="eval-stat-lbl">CRITICAL ESCALATIONS</div>
+                    </div>
+                    <div class="eval-stat c-cyan">
+                        <div class="eval-stat-num" style="color:#06b6d4">100%</div>
+                        <div class="eval-stat-lbl">CORRECTNESS RATE</div>
+                    </div>
+                </div>
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h3>✅ CORRECTNESS OF OUTPUTS</h3>
+                        <ul>
+                            <li>All <strong>18 test scenarios</strong> produced the expected outcome</li>
+                            <li>Excluded conditions blocked correctly in <strong>T01</strong> (Migraine) and <strong>T11</strong> (Cold)</li>
+                            <li>History-gated rules only fired when history was present — verified via <strong>T16 vs T17</strong> and <strong>T18</strong></li>
+                            <li>Numeric thresholds behave with strict inequality — tested at boundary ±1 in <strong>T07/T08</strong> and <strong>T09/T10</strong></li>
+                            <li>Input validation raises ValueError for implausible vitals before any inference runs</li>
+                        </ul>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>🔄 CONSISTENCY OF REASONING</h3>
+                        <ul>
+                            <li>Conflict resolution is <strong>deterministic</strong> — same inputs always yield the same ranked output</li>
+                            <li>T16 vs T17 confirm that adding one fact reproducibly adds one alternative without disturbing the primary</li>
+                            <li>Urgency-first ordering is consistent: Critical always beats High beats Medium beats Low</li>
+                            <li>Confidence used <strong>only as tiebreaker</strong> when urgency ranks tie — not as primary sort key</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB: TEST SCENARIOS ── -->
+            <div class="eval-panel" id="tab-scenarios">
+                <div class="sc-list" id="sc-list"></div>
+            </div>
+
+            <!-- ── TAB: DECISION LOGIC ── -->
+            <div class="eval-panel" id="tab-explanation">
+                <div class="conflict-card">
+                    <h3>CONFLICT RESOLUTION STRATEGY</h3>
+                    <div class="prio-row">
+                        <div class="prio-num p1">1</div>
+                        <div class="prio-body">
+                            <h4>URGENCY RANK — Primary Sort (Descending)</h4>
+                            <p>Critical (3) &gt; High (2) &gt; Medium (1) &gt; Low (0). The most life-threatening condition always wins regardless of confidence. Demonstrated in T06: 8 rules fired, Critical Heart Attack beats all others.</p>
+                        </div>
+                    </div>
+                    <div class="prio-row">
+                        <div class="prio-num p2">2</div>
+                        <div class="prio-body">
+                            <h4>CONFIDENCE SCORE — Tiebreaker (Descending)</h4>
+                            <p>When urgency ties (e.g. T03: COVID-19 and Asthma both High), confidence selects the winner. R02 at 90% beats R06 at 88%. All tied losers become "alternatives" for clinician review.</p>
+                        </div>
+                    </div>
+                    <div class="prio-row">
+                        <div class="prio-num p3">3</div>
+                        <div class="prio-body">
+                            <h4>TRANSPARENCY — Full WHY + HOW Explanation</h4>
+                            <p>Every result includes: (a) <strong>WHY</strong> — which facts triggered which rules with all conditions listed; (b) <strong>HOW</strong> — step-by-step trace of pattern matching → conflict resolution → primary selection → alternatives. No unexplained outputs.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h3>WHY EXPLANATION</h3>
+                        <ul>
+                            <li>Lists all <strong>active facts</strong> detected from inputs</li>
+                            <li>For each fired rule: required conditions, urgency level, confidence %</li>
+                            <li>Explicitly states which conditions matched and why</li>
+                            <li>When no rules fire: clearly states no match and why</li>
+                        </ul>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>HOW EXPLANATION</h3>
+                        <ul>
+                            <li>Step 1: Pattern matching — how many facts evaluated, how many rules matched</li>
+                            <li>Step 2: Conflict resolution — urgency groupings shown</li>
+                            <li>Step 3: Primary selection — winner with full justification</li>
+                            <li>Step 4: Alternative diagnoses — all other fired rules ranked</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB: LIMITATIONS ── -->
+            <div class="eval-panel" id="tab-limitations">
+                <div class="lim-list">
+                    <div class="lim-card">
+                        <div class="lim-icon">🔲</div>
+                        <div>
+                            <h4>BINARY SYMPTOM ENCODING — NO SEVERITY GRADATION</h4>
+                            <p>All symptoms are boolean (present/absent). A "mild cough" and a "severe cough" are encoded identically. This prevents the system from discriminating symptom severity, which is clinically significant.</p>
+                        </div>
+                    </div>
+                    <div class="lim-card">
+                        <div class="lim-icon">📏</div>
+                        <div>
+                            <h4>SPARSE RULE COVERAGE — DIAGNOSTIC GAPS</h4>
+                            <p>Only 10 rules cover a narrow slice of conditions. Common presentations like sinusitis, UTI, diabetic episodes, allergic reactions, or panic attacks produce no_match — leaving patients without guidance.</p>
+                        </div>
+                    </div>
+                    <div class="lim-card">
+                        <div class="lim-icon">⚠️</div>
+                        <div>
+                            <h4>T11 — CLINICALLY AMBIGUOUS NO-MATCH</h4>
+                            <p>Cough + Sore Throat + Fever produces no_match because R05 (Cold) excludes fever. But this presentation could be flu (R01 needs fatigue) or COVID (R02 needs shortness of breath). The patient receives no guidance — a potential safety gap.</p>
+                        </div>
+                    </div>
+                    <div class="lim-card">
+                        <div class="lim-icon">🎯</div>
+                        <div>
+                            <h4>HARD NUMERIC THRESHOLDS — NO CLINICAL GRADATION</h4>
+                            <p>HR=100 → normal; HR=101 → critical. Real clinical practice uses continuous risk curves and patient baselines. A threshold-based system can miss deteriorating patients approaching (but not crossing) the boundary.</p>
+                        </div>
+                    </div>
+                    <div class="lim-card">
+                        <div class="lim-icon">📊</div>
+                        <div>
+                            <h4>CONFIDENCE SCORES ARE AUTHORIAL, NOT DATA-DRIVEN</h4>
+                            <p>Confidence values (e.g. 0.97 for Heart Attack) are hardcoded by the rule author, not derived from epidemiological data or Bayesian inference. They serve as tiebreakers but do not represent statistically validated probabilities.</p>
+                        </div>
+                    </div>
+                    <div class="lim-card">
+                        <div class="lim-icon">🔗</div>
+                        <div>
+                            <h4>NO TEMPORAL REASONING OR SYMPTOM DURATION</h4>
+                            <p>The system has no concept of onset, duration, or trends. A symptom present for 10 minutes is treated identically to one for 10 days, preventing recognition of evolving clinical presentations.</p>
+                        </div>
+                    </div>
+                    <div class="lim-card">
+                        <div class="lim-icon">🧬</div>
+                        <div>
+                            <h4>NO PATIENT DEMOGRAPHICS</h4>
+                            <p>Age, sex, weight, pregnancy status, medications, and allergies are absent. A 70-year-old with chest pain and a 25-year-old receive identical outputs, despite vastly different clinical risk profiles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB: RULE COVERAGE ── -->
+            <div class="eval-panel" id="tab-rules">
+                <div style="overflow-x:auto">
+                <table class="eval-table">
+                    <thead>
+                        <tr>
+                            <th>RULE</th>
+                            <th>DIAGNOSIS</th>
+                            <th>URGENCY</th>
+                            <th>KEY CONDITIONS</th>
+                            <th>EXCLUDES</th>
+                            <th>CONFIDENCE</th>
+                            <th>TESTED IN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>R01</td><td>Flu</td><td><span class="ubadge medium">MEDIUM</span></td><td>fever, cough, fatigue</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:80%"></span></span>80%</td><td>T06, Sc2</td></tr>
+                        <tr><td>R02</td><td>COVID-19</td><td><span class="ubadge high">HIGH</span></td><td>fever, cough, shortness_of_breath</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:90%"></span></span>90%</td><td>T03,T16,T17</td></tr>
+                        <tr><td>R03</td><td>Migraine</td><td><span class="ubadge low">LOW</span></td><td>headache, nausea</td><td>fever</td><td><span class="conf-bar"><span class="conf-fill" style="width:70%"></span></span>70%</td><td>T01, T02</td></tr>
+                        <tr><td>R04</td><td>Possible Heart Issue</td><td><span class="ubadge critical">CRITICAL</span></td><td>chest_pain, high_heart_rate</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:95%"></span></span>95%</td><td>T07,T08,T18</td></tr>
+                        <tr><td>R05</td><td>Common Cold</td><td><span class="ubadge low">LOW</span></td><td>cough, sore_throat</td><td>fever</td><td><span class="conf-bar"><span class="conf-fill" style="width:75%"></span></span>75%</td><td>T11, Sc1</td></tr>
+                        <tr><td>R06</td><td>Asthma Complication</td><td><span class="ubadge high">HIGH</span></td><td>fever,cough,SOB + history_asthma</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:88%"></span></span>88%</td><td>T03,T16,T17</td></tr>
+                        <tr><td>R07</td><td>Possible Heart Attack</td><td><span class="ubadge critical">CRITICAL</span></td><td>chest_pain,sweating,dizziness + history_heart</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:97%"></span></span>97%</td><td>T06, T18</td></tr>
+                        <tr><td>R08</td><td>Possible Meningitis</td><td><span class="ubadge critical">CRITICAL</span></td><td>headache, fever, light_sensitivity</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:92%"></span></span>92%</td><td>T04, T06</td></tr>
+                        <tr><td>R09</td><td>Appendicitis / GI</td><td><span class="ubadge high">HIGH</span></td><td>abdominal_pain, fever, nausea</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:80%"></span></span>80%</td><td>T05, T06</td></tr>
+                        <tr><td>R10</td><td>Respiratory Distress</td><td><span class="ubadge critical">CRITICAL</span></td><td>shortness_of_breath, low_oxygen_level</td><td>—</td><td><span class="conf-bar"><span class="conf-fill" style="width:95%"></span></span>95%</td><td>T09, T10</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // ── Evaluation Tab Switching ──
+        function switchTab(name) {
+            document.querySelectorAll('.eval-tab').forEach((t,i) => {
+                const names = ['overview','scenarios','explanation','limitations','rules'];
+                t.classList.toggle('active', names[i] === name);
+            });
+            document.querySelectorAll('.eval-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+
+        // ── Scenario Data ──
+        const SCENARIOS = [
+            { id:'T01', label:'Migraine Blocked by Fever (Excluded Condition)', urgency:'nomatch', pass:true,
+              facts:['headache','nausea','fever'], primary:null,
+              obs:'R03 (Migraine) requires headache+nausea <b>but excludes fever</b>. Since fever is present it is correctly suppressed. Demonstrates excluded_conditions logic works as intended.',
+              why:'[STEP] Active facts: headache, nausea, fever\n[STEP] R03 (Migraine) requires headache + nausea AND excludes fever.\n[RESULT] Excluded condition \'fever\' blocked R03. No rules matched.' },
+            { id:'T02', label:'Migraine Without Fever', urgency:'low', pass:true,
+              facts:['headache','nausea'], primary:{rule:'R03',diag:'Migraine',urg:'Low',conf:'70.0%'}, alts:[],
+              obs:'Without fever the excluded_condition no longer blocks R03. Single rule fires correctly.',
+              why:'[STEP] Active facts: headache, nausea\n[MATCH] R03 (Migraine): headache ✓ nausea ✓ — excluded fever absent ✓\n[STEP] 1 rule fired. Primary: Migraine | Low | 70%' },
+            { id:'T03', label:'Asthma Complication — COVID vs Asthma Conflict', urgency:'high', pass:true,
+              facts:['fever','cough','shortness_of_breath','history_of_asthma'],
+              primary:{rule:'R02',diag:'COVID-19',urg:'High',conf:'90.0%'},
+              alts:[{rule:'R06',diag:'Asthma Complication',urg:'High',conf:'88.0%'}],
+              obs:'Both R02 (90%) and R06 (88%) fire. Both are HIGH urgency — tiebreak by confidence → COVID-19 wins. Asthma listed as alternative.',
+              why:'[STEP] 4 active facts\n[MATCH] R02: fever+cough+SOB → COVID-19 (High, 90%)\n[MATCH] R06: fever+cough+SOB+history_asthma → Asthma (High, 88%)\n[STEP] Conflict: both HIGH — tiebreak by confidence → R02 wins' },
+            { id:'T04', label:'Possible Meningitis', urgency:'critical', pass:true,
+              facts:['headache','fever','light_sensitivity'],
+              primary:{rule:'R08',diag:'Possible Meningitis',urg:'Critical',conf:'92.0%'}, alts:[],
+              obs:'Single rule fires at CRITICAL. Emergency escalation triggered immediately.',
+              why:'[MATCH] R08: headache+fever+light_sensitivity → Meningitis (Critical, 92%)\n[STEP] Single rule. CRITICAL escalation warranted.' },
+            { id:'T05', label:'Appendicitis / GI Infection', urgency:'high', pass:true,
+              facts:['abdominal_pain','fever','nausea'],
+              primary:{rule:'R09',diag:'Appendicitis / GI Infection',urg:'High',conf:'80.0%'}, alts:[],
+              obs:'R09 fires cleanly. Correct High-level escalation to urgent care.',
+              why:'[MATCH] R09: abdominal_pain+fever+nausea → Appendicitis (High, 80%)\n[STEP] Single rule. Correct urgent care escalation.' },
+            { id:'T06', label:'Maximal Symptom Overlap — Stress Test (All Symptoms)', urgency:'critical', pass:true,
+              facts:['fever','cough','fatigue','shortness_of_breath','headache','nausea','chest_pain','sweating','dizziness','light_sensitivity','abdominal_pain','high_heart_rate','low_oxygen_level','history_of_asthma','history_of_heart_disease'],
+              primary:{rule:'R07',diag:'Possible Heart Attack',urg:'Critical',conf:'97.0%'},
+              alts:[{rule:'R04',diag:'Possible Heart Issue',urg:'Critical',conf:'95%'},{rule:'R10',diag:'Respiratory Distress',urg:'Critical',conf:'95%'},{rule:'R08',diag:'Meningitis',urg:'Critical',conf:'92%'},{rule:'R02',diag:'COVID-19',urg:'High',conf:'90%'}],
+              obs:'15 facts, 8 of 10 rules fire. R03/R05 correctly blocked by fever. Highest urgency + highest confidence (R07, 97%) wins.',
+              why:'[STEP] 15 facts evaluated against all 10 rules\n[MATCH] 8 rules fired\n[STEP] 4 CRITICAL, 3 HIGH, 1 MEDIUM\n[STEP] Winner: R07 Possible Heart Attack (Critical, 97%)' },
+            { id:'T07', label:'Heart Rate = 100 bpm (At Threshold — NOT High)', urgency:'nomatch', pass:true,
+              facts:['chest_pain'],  primary:null,
+              obs:'System uses strict > 100. HR=100 → high_heart_rate = FALSE. Chest pain alone cannot fire R04. No false positive.',
+              why:'[STEP] HR=100 → 100 > 100 = FALSE → high_heart_rate not asserted\n[STEP] chest_pain alone matches no rule.\n[RESULT] No match.' },
+            { id:'T08', label:'Heart Rate = 101 bpm (Just Above Threshold)', urgency:'critical', pass:true,
+              facts:['chest_pain','high_heart_rate'],
+              primary:{rule:'R04',diag:'Possible Heart Issue',urg:'Critical',conf:'95.0%'}, alts:[],
+              obs:'One bpm above threshold correctly asserts high_heart_rate=TRUE, enabling R04. Boundary is sharp and consistent with T07.',
+              why:'[STEP] HR=101 → 101 > 100 = TRUE → high_heart_rate asserted\n[MATCH] R04: chest_pain+high_heart_rate → Heart Issue (Critical, 95%)\n[STEP] Critical escalation triggered.' },
+            { id:'T09', label:'SpO₂ = 94% (At Threshold — NOT Low)', urgency:'nomatch', pass:true,
+              facts:['shortness_of_breath'], primary:null,
+              obs:'System uses strict < 94. SpO₂=94 → low_oxygen_level = FALSE. SOB alone cannot fire R10. No false Critical alarm.',
+              why:'[STEP] SpO₂=94 → 94 < 94 = FALSE → low_oxygen_level not asserted\n[STEP] shortness_of_breath alone matches no rule.\n[RESULT] No match.' },
+            { id:'T10', label:'SpO₂ = 93% (Just Below Threshold)', urgency:'critical', pass:true,
+              facts:['shortness_of_breath','low_oxygen_level'],
+              primary:{rule:'R10',diag:'Respiratory Distress',urg:'Critical',conf:'95.0%'}, alts:[],
+              obs:'SpO₂=93 correctly asserts low_oxygen_level=TRUE, enabling R10. Complement to T09.',
+              why:'[STEP] SpO₂=93 → 93 < 94 = TRUE → low_oxygen_level asserted\n[MATCH] R10: shortness_of_breath+low_oxygen_level → Respiratory Distress (Critical, 95%)' },
+            { id:'T11', label:'Cold + Fever (R05 Excluded Condition Active)', urgency:'nomatch', pass:true,
+              facts:['cough','sore_throat','fever'], primary:null,
+              obs:'R05 (Cold) excludes fever → blocked. No other rule covers this exact pattern. <b>Limitation identified</b>: patient receives no guidance despite presenting symptoms.',
+              why:'[STEP] Active facts: cough, sore_throat, fever\n[STEP] R05 requires cough+sore_throat AND excludes fever → blocked\n[RESULT] No rules matched. Known diagnostic gap.' },
+            { id:'T12', label:'Empty Input — No Symptoms or Vitals', urgency:'nomatch', pass:true,
+              facts:[], primary:null,
+              obs:'System handles completely empty input gracefully. No crash, no fabricated diagnosis. Robust edge-case handling.',
+              why:'[STEP] 0 active facts\n[STEP] All rules require at least one fact → none fire.\n[RESULT] No match. Empty input handled gracefully.' },
+            { id:'T13', label:'Background History Only — No Current Symptoms', urgency:'nomatch', pass:true,
+              facts:['history_of_asthma','history_of_heart_disease'], primary:null,
+              obs:'History flags alone cannot trigger any rule. System correctly refuses to diagnose from history alone.',
+              why:'[STEP] Active facts: history_of_asthma, history_of_heart_disease\n[STEP] All rules require at least one current symptom.\n[RESULT] No rules fire on history alone.' },
+            { id:'T14', label:'Invalid Heart Rate (5 bpm — Out of Range)', urgency:'error', pass:true,
+              facts:['chest_pain','heart_rate=5'], primary:null,
+              obs:'ValueError raised: "Heart rate 5 is outside a plausible range (20–300 bpm)." Input validation fires before inference.',
+              why:'[STEP] hr = 5\n[STEP] 5 < 20 → outside plausible range\n[RESULT] ValueError raised. Inference aborted safely.' },
+            { id:'T15', label:'Invalid SpO₂ (110% — Out of Range)', urgency:'error', pass:true,
+              facts:['shortness_of_breath','spo2=110%'], primary:null,
+              obs:'ValueError raised: "Oxygen level 110 % is outside a plausible range (50–100 %)." Guards against sensor errors or typos.',
+              why:'[STEP] spo2 = 110\n[STEP] 110 > 100 → outside plausible range\n[RESULT] ValueError raised. Inference aborted safely.' },
+            { id:'T16', label:'COVID Symptoms — No Asthma History (R06 Must NOT Fire)', urgency:'high', pass:true,
+              facts:['fever','cough','shortness_of_breath'],
+              primary:{rule:'R02',diag:'COVID-19',urg:'High',conf:'90.0%'}, alts:[],
+              obs:'R06 requires history_of_asthma — absent here. Only R02 fires. No hallucinated alternatives.',
+              why:'[MATCH] R02: fever+cough+SOB → COVID-19 (High, 90%)\n[STEP] R06 requires history_of_asthma — not present → blocked\n[STEP] Primary only: COVID-19' },
+            { id:'T17', label:'COVID Symptoms + Asthma History (R02 AND R06 Fire)', urgency:'high', pass:true,
+              facts:['fever','cough','shortness_of_breath','history_of_asthma'],
+              primary:{rule:'R02',diag:'COVID-19',urg:'High',conf:'90.0%'},
+              alts:[{rule:'R06',diag:'Asthma Complication',urg:'High',conf:'88.0%'}],
+              obs:'Contrast with T16 — adding history_of_asthma unlocks R06. Both fire. Clinically valuable: both COVID and asthma presented as differentials.',
+              why:'[MATCH] R02: fever+cough+SOB → COVID-19 (High, 90%)\n[MATCH] R06: +history_of_asthma → Asthma Complication (High, 88%)\n[STEP] Both High — tiebreak confidence → R02 primary, R06 alternative' },
+            { id:'T18', label:'Heart Attack Symptoms — No Cardiac History (R07 Must NOT Fire)', urgency:'critical', pass:true,
+              facts:['chest_pain','sweating','dizziness','high_heart_rate (130bpm)'],
+              primary:{rule:'R04',diag:'Possible Heart Issue',urg:'Critical',conf:'95.0%'}, alts:[],
+              obs:'R07 requires history_of_heart_disease — absent. Falls back to R04. Still Critical — appropriately conservative.',
+              why:'[STEP] R07 requires history_of_heart_disease → not present → blocked\n[MATCH] R04: chest_pain+high_heart_rate → Heart Issue (Critical, 95%)\n[STEP] Critical escalation maintained via R04.' },
+        ];
+
+        function buildScenarios() {
+            const list = document.getElementById('sc-list');
+            list.innerHTML = '';
+            SCENARIOS.forEach(sc => {
+                const altsHtml = (sc.alts || []).map(a =>
+                    `<div class="diag-row"><span class="diag-rule">${a.rule}</span><span class="diag-name">${a.diag}</span><span class="ubadge ${a.urg.toLowerCase()}">${a.urg.toUpperCase()}</span><span class="diag-conf">${a.conf}</span></div>`
+                ).join('');
+                const primaryHtml = sc.primary
+                    ? `<div class="diag-row primary"><span class="diag-rule">${sc.primary.rule}</span><span class="diag-name">${sc.primary.diag}</span><span class="ubadge ${sc.primary.urg.toLowerCase()}">${sc.primary.urg.toUpperCase()}</span><span class="diag-conf">${sc.primary.conf}</span></div>${altsHtml}`
+                    : `<div class="diag-row" style="justify-content:center;color:var(--text-muted);font-style:italic;font-size:0.72rem">No rules fired</div>`;
+                const factsHtml = sc.facts.map(f => `<span class="fact-chip">${f}</span>`).join('');
+
+                const whyFormatted = sc.why.replace(/\[STEP\]/g,'<span class="t-step">[STEP]</span>').replace(/\[MATCH\]/g,'<span class="t-match">[MATCH]</span>').replace(/\[RESULT\]/g,'<span class="t-result">[RESULT]</span>');
+
+                const item = document.createElement('div');
+                item.className = 'sc-item';
+                item.innerHTML = `
+                    <div class="sc-head" onclick="toggleSc(this)">
+                        <span class="sc-num">${sc.id}</span>
+                        <span class="sc-name">${sc.label}</span>
+                        <div class="sc-badges">
+                            <span class="ubadge ${sc.urgency}">${sc.urgency === 'nomatch' ? 'NO MATCH' : sc.urgency === 'error' ? 'ERROR' : sc.urgency.toUpperCase()}</span>
+                            <span class="ubadge pass">✓ PASS</span>
+                        </div>
+                        <span class="sc-chevron">▼</span>
+                    </div>
+                    <div class="sc-body">
+                        <div><h4>ACTIVE FACTS</h4><div class="fact-wrap">${factsHtml || '<span style="color:var(--text-muted);font-size:0.72rem">none</span>'}</div></div>
+                        <div><h4>DIAGNOSIS</h4>${primaryHtml}</div>
+                        <div class="obs-box" style="grid-column:1/-1"><span>OBSERVATION:</span> ${sc.obs}</div>
+                        <div class="eval-terminal" style="grid-column:1/-1">${whyFormatted}</div>
+                    </div>`;
+                list.appendChild(item);
+            });
+        }
+
+        function toggleSc(head) {
+            head.parentElement.classList.toggle('open');
+        }
+
+        buildScenarios();
+    </script>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:5000';
+
+        // Animate stats on load
+        window.addEventListener('load', () => {
+            animateCounter('stat-rules', 0, 10, 2000);
+            animateCounter('stat-urgency', 0, 4, 2000);
+            startRuleMonitor();
+            loadKnowledgeBase();
+        });
+
+        function animateCounter(id, start, end, duration) {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const increment = range / (duration / 50);
+            let current = start;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    element.textContent = end;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 50);
+        }
+
+        // Rule monitor animation
+        const rules = [
+            { id: 'R01', diagnosis: 'Flu', status: 'MATCHED' },
+            { id: 'R02', diagnosis: 'COVID-19', status: 'MATCHED' },
+            { id: 'R03', diagnosis: 'Migraine', status: 'REJECTED' },
+            { id: 'R04', diagnosis: 'Possible Heart Issue', status: 'MATCHED' },
+            { id: 'R05', diagnosis: 'Common Cold', status: 'REJECTED' },
+            { id: 'R06', diagnosis: 'Asthma Complication', status: 'MATCHED' },
+            { id: 'R07', diagnosis: 'Possible Heart Attack', status: 'MATCHED' },
+            { id: 'R08', diagnosis: 'Possible Meningitis', status: 'REJECTED' },
+            { id: 'R09', diagnosis: 'Appendicitis / GI Infection', status: 'REJECTED' },
+            { id: 'R10', diagnosis: 'Respiratory Distress', status: 'MATCHED' }
+        ];
+
+        let ruleIndex = 0;
+
+        function startRuleMonitor() {
+            const monitor = document.getElementById('rule-monitor');
+            const progress = document.getElementById('progress');
+            
+            setInterval(() => {
+                const rule = rules[ruleIndex];
+                monitor.innerHTML = '';
+                
+                const lines = [
+                    `<div class="rule-line" style="animation-delay: 0s;">[${rule.id}] PENDING...</div>`,
+                    `<div class="rule-line" style="animation-delay: 0.5s;">[${rule.id}] EVALUATING: ${rule.diagnosis}</div>`,
+                    `<div class="rule-line" style="animation-delay: 1s; color: ${rule.status === 'MATCHED' ? 'var(--neon-green)' : 'var(--critical-red)'};">[${rule.id}] ${rule.status}</div>`
+                ];
+                
+                monitor.innerHTML = lines.join('');
+                progress.style.animation = 'none';
+                setTimeout(() => {
+                    progress.style.animation = 'progress 2s ease-in-out forwards';
+                }, 10);
+                
+                ruleIndex = (ruleIndex + 1) % rules.length;
+            }, 3000);
+        }
+
+        // ECG Animation System
+        const ECG_CONFIG = {
+            low: { bpm: 60, amplitude: 40, color: '#00ff88' },
+            medium: { bpm: 90, amplitude: 60, color: '#00ff88' },
+            high: { bpm: 140, amplitude: 80, color: '#00ff88' },
+            critical: { bpm: 175, amplitude: 100, color: '#00ff88' }
+        };
+
+        const SEVERITY_MAP = {
+            'Critical': 'critical',
+            'High': 'high',
+            'Medium': 'medium',
+            'Low': 'low',
+            'low': 'low',
+            'medium': 'medium',
+            'high': 'high',
+            'critical': 'critical'
+        };
+
+        let animationFrame = null;
+        let currentSeverity = 'medium';
+        let ecgPhase = 0;
+        let ecgX = 0;
+        let lastY = 0;
+        let canvas = null;
+        let ctx = null;
+
+        function initCanvas() {
+            canvas = document.getElementById('ecg-canvas');
+            if (!canvas || !canvas.getContext) {
+                console.warn('Canvas not supported');
+                return false;
+            }
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            // Clear canvas with transparent background
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ecgX = 0;
+            ecgPhase = 0;
+            lastY = canvas.height / 2;
+            
+            return true;
+        }
+
+        function generateECGPoint(phase, amplitude) {
+            // P wave (0-0.2)
+            if (phase < 0.2) {
+                return amplitude * 0.1 * Math.sin(phase * Math.PI * 5);
+            }
+            // QRS complex (0.2-0.4)
+            else if (phase >= 0.2 && phase < 0.4) {
+                const qrsPhase = (phase - 0.2) * 5;
+                if (qrsPhase < 0.3) return -amplitude * 0.2; // Q
+                if (qrsPhase < 0.6) return amplitude * Math.sin((qrsPhase - 0.3) * Math.PI / 0.3); // R
+                return -amplitude * 0.3; // S
+            }
+            // T wave (0.5-0.8)
+            else if (phase >= 0.5 && phase < 0.8) {
+                return amplitude * 0.3 * Math.sin((phase - 0.5) * Math.PI / 0.3);
+            }
+            // Baseline
+            return 0;
+        }
+
+        function animateECG() {
+            if (!canvas || !ctx) return;
+            
+            const config = ECG_CONFIG[currentSeverity];
+            
+            // Fade previous frame for trailing effect using clearRect
+            const fadeWidth = 30;
+            ctx.clearRect(ecgX + 2, 0, fadeWidth, canvas.height);
+            
+            // Draw new segment
+            ctx.strokeStyle = config.color;
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = config.color;
+            
+            const centerY = canvas.height / 2;
+            const point = generateECGPoint(ecgPhase, config.amplitude);
+            const currentY = centerY - point;
+            
+            ctx.beginPath();
+            ctx.moveTo(ecgX - 2, lastY);
+            ctx.lineTo(ecgX, currentY);
+            ctx.stroke();
+            
+            lastY = currentY;
+            
+            // Update position
+            ecgX += 2;
+            if (ecgX > canvas.width) {
+                ecgX = 0;
+                lastY = centerY;
+            }
+            
+            // Update phase based on BPM (60fps assumed)
+            const phaseIncrement = (config.bpm / 60) * 0.016;
+            ecgPhase = (ecgPhase + phaseIncrement) % 1;
+            
+            animationFrame = requestAnimationFrame(animateECG);
+        }
+
+        function updateECGSpeed(urgency) {
+            const severity = SEVERITY_MAP[urgency] || 'medium';
+            currentSeverity = severity;
+        }
+
+        function showInferenceOverlay() {
+            const overlay = document.getElementById('inference-overlay');
+            const statusText = document.getElementById('status-text');
+            
+            overlay.classList.remove('hidden');
+            statusText.textContent = 'PROCESSING...';
+            statusText.className = 'status-text processing';
+            
+            // Initialize and start ECG animation
+            if (initCanvas()) {
+                currentSeverity = 'medium';
+                animateECG();
+            }
+        }
+
+        function hideInferenceOverlay() {
+            const overlay = document.getElementById('inference-overlay');
+            const diagnosisPanel = document.getElementById('diagnosis-panel');
+            const reasoningPanel = document.getElementById('reasoning-panel');
+            
+            // Stop animation
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            
+            // Hide overlay
+            overlay.classList.add('hidden');
+            
+            // Reset panels
+            diagnosisPanel.classList.remove('visible');
+            reasoningPanel.classList.remove('visible');
+            diagnosisPanel.innerHTML = '';
+            reasoningPanel.innerHTML = '';
+        }
+
+        function populateDiagnosisPanel(result) {
+            const panel = document.getElementById('diagnosis-panel');
+            const urgencyClass = result.urgency.toLowerCase().replace(' ', '-');
+            
+            let html = `
+                <div style="margin-bottom: 2rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 1rem;">DIAGNOSIS_OUTPUT</div>
+                    <div class="urgency-badge urgency-${urgencyClass}">${result.urgency.toUpperCase()}</div>
+                </div>
+                <div style="margin-bottom: 2rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 0.5rem;">CONFIDENCE_SCORE</div>
+                    <div style="font-size: 2.5rem; color: var(--neon-green); font-weight: 700;">${(result.confidence * 100).toFixed(1)}%</div>
+                </div>
+                <div style="margin-bottom: 2rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 0.5rem;">PRIMARY_DIAGNOSIS</div>
+                    <div style="font-size: 1.3rem; color: var(--neon-green); letter-spacing: 1px;">${result.diagnosis}</div>
+                </div>
+                <div style="margin-bottom: 2rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 0.5rem;">RECOMMENDED_ACTION</div>
+                    <div style="color: var(--text-muted); line-height: 1.8; font-size: 0.9rem;">${result.action}</div>
+                </div>
+            `;
+            
+            // Add alternatives
+            if (result.alternatives && result.alternatives.length > 0) {
+                html += `<div style="margin-top: 2rem;">
+                    <div style="font-size: 0.75rem; color: var(--neon-green); letter-spacing: 1px; margin-bottom: 1rem;">ALTERNATIVE_DIAGNOSES</div>`;
+                
+                result.alternatives.forEach(alt => {
+                    const altUrgencyClass = alt.urgency.toLowerCase().replace(' ', '-');
+                    const urgencyColors = {
+                        'critical': 'var(--critical-red)',
+                        'high': 'var(--high-orange)',
+                        'medium': 'var(--medium-yellow)',
+                        'low': 'var(--low-green)'
+                    };
+                    const color = urgencyColors[altUrgencyClass] || 'var(--neon-green)';
+                    
+                    html += `
+                        <div style="background: var(--bg-dark); border: 1px solid var(--border-color); padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="color: #FFFFFF; font-size: 0.9rem;">${alt.diagnosis}</div>
+                                <div style="font-size: 0.75rem; color: ${color}; margin-top: 0.25rem;">${alt.urgency.toUpperCase()}</div>
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">${(alt.confidence * 100).toFixed(1)}%</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+            
+            panel.innerHTML = html;
+        }
+
+        function populateReasoningPanel(result) {
+            const panel = document.getElementById('reasoning-panel');
+            
+            let html = `
+                <div style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 1.5rem;">REASONING_TRACE</div>
+                <div style="background: var(--bg-dark); padding: 1.5rem; font-size: 0.85rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;">
+            `;
+            
+            // Parse WHY explanation
+            if (result.why_explanation) {
+                result.why_explanation.split('\n').forEach(line => {
+                    if (line.trim()) {
+                        let className = '';
+                        if (line.includes('[STEP]')) className = 'step';
+                        else if (line.includes('[MATCH]')) className = 'match';
+                        else if (line.includes('[CONFLICT]')) className = 'conflict';
+                        else if (line.includes('[RESULT]')) className = 'result';
+                        else if (line.includes('[URGENCY]')) className = 'urgency';
+                        else if (line.includes('[CONFIDENCE]')) className = 'confidence';
+                        
+                        html += `<div class="reasoning-line ${className}" style="margin-bottom: 0.5rem;">${line}</div>`;
+                    }
+                });
+            }
+            
+            html += `<div style="margin: 1rem 0; color: var(--border-color);">─────────────────────────────────────</div>`;
+            
+            // Parse HOW explanation
+            if (result.how_explanation) {
+                result.how_explanation.split('\n').forEach(line => {
+                    if (line.trim()) {
+                        let className = '';
+                        if (line.includes('[STEP]')) className = 'step';
+                        else if (line.includes('[MATCH]')) className = 'match';
+                        else if (line.includes('[CONFLICT]')) className = 'conflict';
+                        else if (line.includes('[RESULT]')) className = 'result';
+                        else if (line.includes('[URGENCY]')) className = 'urgency';
+                        else if (line.includes('[CONFIDENCE]')) className = 'confidence';
+                        
+                        html += `<div class="reasoning-line ${className}" style="margin-bottom: 0.5rem;">${line}</div>`;
+                    }
+                });
+            }
+            
+            html += `</div>`;
+            panel.innerHTML = html;
+        }
+
+        function showFloatingPanels(result) {
+            populateDiagnosisPanel(result);
+            populateReasoningPanel(result);
+            
+            const diagnosisPanel = document.getElementById('diagnosis-panel');
+            const reasoningPanel = document.getElementById('reasoning-panel');
+            const statusText = document.getElementById('status-text');
+            
+            // Update status
+            statusText.textContent = 'INFERENCE_COMPLETE';
+            statusText.className = 'status-text complete';
+            
+            // Wait 1500ms before showing panels
+            setTimeout(() => {
+                diagnosisPanel.classList.add('visible');
+                reasoningPanel.classList.add('visible');
+            }, 1500);
+        }
+
+        // Close overlay handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.getElementById('close-overlay');
+            const overlay = document.getElementById('inference-overlay');
+            const backdrop = overlay?.querySelector('.inference-backdrop');
+            
+            if (closeBtn) {
+                closeBtn.addEventListener('click', hideInferenceOverlay);
+            }
+            
+            if (backdrop) {
+                backdrop.addEventListener('click', hideInferenceOverlay);
+            }
+            
+            // ESC key handler
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay && !overlay.classList.contains('hidden')) {
+                    hideInferenceOverlay();
+                }
+            });
+        });
+
+        // 3D Tilt effect for architecture cards
+        document.querySelectorAll('[data-tilt]').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            });
+        });
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.pipeline-step').forEach(step => {
+            observer.observe(step);
+        });
+
+        // Load knowledge base from API
+        async function loadKnowledgeBase() {
+            try {
+                const response = await fetch(`${API_BASE}/api/rules`);
+                if (!response.ok) throw new Error('Failed to fetch rules');
+                
+                const rules = await response.json();
+                const tbody = document.getElementById('rules-tbody');
+                tbody.innerHTML = '';
+                
+                rules.forEach(rule => {
+                    const urgencyClass = rule.urgency.toLowerCase().replace(' ', '-');
+                    const urgencyColors = {
+                        'critical': 'var(--critical-red)',
+                        'high': 'var(--high-orange)',
+                        'medium': 'var(--medium-yellow)',
+                        'low': 'var(--low-green)'
+                    };
+                    const color = urgencyColors[urgencyClass] || 'var(--neon-green)';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${rule.id}</td>
+                        <td>${rule.diagnosis}</td>
+                        <td><span style="color: ${color}; font-weight: 700;">${rule.urgency.toUpperCase()}</span></td>
+                        <td>${rule.conditions.join(', ')}</td>
+                        <td>${(rule.confidence * 100).toFixed(0)}%</td>
+                        <td>${rule.action}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                document.getElementById('table-footer').textContent = 
+                    `TOTAL RULES: ${rules.length} · ENGINE: FORWARD CHAINING · CONFLICT: URGENCY-FIRST`;
+            } catch (error) {
+                console.error('Error loading knowledge base:', error);
+                document.getElementById('rules-tbody').innerHTML = 
+                    '<tr><td colspan="6" style="text-align: center; color: var(--critical-red);">Failed to load rules. Ensure server is running.</td></tr>';
+            }
+        }
+
+        // Run inference
+        async function runInference() {
+            const runBtn = document.getElementById('run-btn');
+            const errorContainer = document.getElementById('error-container');
+            
+            errorContainer.innerHTML = '';
+            
+            // Collect symptoms
+            const symptoms = {};
+            ['fever', 'cough', 'shortness_of_breath', 'chest_pain', 'headache', 'fatigue', 
+             'nausea', 'sore_throat', 'sweating', 'dizziness', 'light_sensitivity', 'abdominal_pain'].forEach(symptom => {
+                symptoms[symptom] = document.getElementById(symptom).checked;
+            });
+            
+            // Collect vitals
+            const vitals = {};
+            const heartRate = document.getElementById('heart_rate').value;
+            const spo2 = document.getElementById('spo2').value;
+            const temperature = document.getElementById('temperature').value;
+            
+            // Validate inputs
+            if (heartRate) {
+                const hr = parseInt(heartRate);
+                if (hr < 40 || hr > 200) {
+                    errorContainer.innerHTML = `
+                        <div class="error-banner">
+                            VALIDATION_ERROR — Heart rate must be between 40-200 bpm
+                        </div>
+                    `;
+                    return;
+                }
+                vitals.heart_rate = hr;
+                if (vitals.heart_rate > 100) vitals.high_heart_rate = true;
+            }
+            if (spo2) {
+                const oxygen = parseInt(spo2);
+                if (oxygen < 50 || oxygen > 100) {
+                    errorContainer.innerHTML = `
+                        <div class="error-banner">
+                            VALIDATION_ERROR — SpO2 must be between 50-100%
+                        </div>
+                    `;
+                    return;
+                }
+                vitals.spo2 = oxygen;
+                if (vitals.spo2 < 94) vitals.low_oxygen_level = true;
+            }
+            if (temperature) {
+                vitals.temperature = parseFloat(temperature);
+                if (vitals.temperature > 38) symptoms.fever = true;
+            }
+            
+            // Collect history
+            const history = {
+                history_of_asthma: document.getElementById('history_of_asthma').checked,
+                history_of_heart_disease: document.getElementById('history_of_heart_disease').checked
+            };
+            
+            // Show inference overlay with ECG animation
+            runBtn.disabled = true;
+            showInferenceOverlay();
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/triage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ symptoms, vitals, history })
+                });
+                
+                if (!response.ok) throw new Error('Server error');
+                
+                const result = await response.json();
+                
+                // Update ECG speed based on urgency
+                updateECGSpeed(result.urgency);
+                
+                // Show results in floating panels
+                showFloatingPanels(result);
+                
+            } catch (error) {
+                console.error('Error running inference:', error);
+                
+                // Show error in overlay
+                const statusText = document.getElementById('status-text');
+                statusText.textContent = 'INFERENCE_FAILED';
+                statusText.className = 'status-text error';
+                
+                const diagnosisPanel = document.getElementById('diagnosis-panel');
+                diagnosisPanel.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 1.5rem; color: var(--critical-red); margin-bottom: 1rem;">CONNECTION_FAILED</div>
+                        <div style="color: var(--text-muted); line-height: 1.8;">
+                            Failed to connect to inference engine.<br>
+                            Ensure server is running: <code style="color: var(--neon-green);">python server.py</code>
+                        </div>
+                    </div>
+                `;
+                diagnosisPanel.classList.add('visible');
+                
+                errorContainer.innerHTML = `
+                    <div class="error-banner">
+                        SERVER_OFFLINE — Run: python server.py
+                    </div>
+                `;
+            } finally {
+                runBtn.disabled = false;
+            }
+        }
+
+        // Legacy display functions (replaced by overlay system)
+        // Kept for reference - these are no longer called
+        /*
+        function displayResults(result) {
+            const outputContent = document.getElementById('output-content');
+            const reasoningContent = document.getElementById('reasoning-content');
+            
+            // Display primary diagnosis
+            const urgencyClass = result.urgency.toLowerCase().replace(' ', '-');
+            let output = `
+                <div class="output-section">
+                    <div class="urgency-badge urgency-${urgencyClass}">${result.urgency.toUpperCase()}</div>
+                </div>
+                <div class="output-section">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 0.5rem;">CONFIDENCE_SCORE</div>
+                    <div class="confidence-score" id="confidence-display">0%</div>
+                </div>
+                <div class="output-section">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 0.5rem;">PRIMARY_DIAGNOSIS</div>
+                    <div class="diagnosis-name">${result.diagnosis}</div>
+                </div>
+                <div class="output-section">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 0.5rem;">RECOMMENDED_ACTION</div>
+                    <div class="action-text">${result.action}</div>
+                </div>
+            `;
+            
+            // Display alternatives
+            if (result.alternatives && result.alternatives.length > 0) {
+                output += `
+                    <div class="alternatives">
+                        <h4>ALTERNATIVE DIAGNOSES</h4>
+                `;
+                result.alternatives.forEach(alt => {
+                    const altUrgencyClass = alt.urgency.toLowerCase().replace(' ', '-');
+                    const urgencyColors = {
+                        'critical': 'var(--critical-red)',
+                        'high': 'var(--high-orange)',
+                        'medium': 'var(--medium-yellow)',
+                        'low': 'var(--low-green)'
+                    };
+                    const color = urgencyColors[altUrgencyClass] || 'var(--neon-green)';
+                    
+                    output += `
+                        <div class="alt-item">
+                            <div>
+                                <div class="alt-diagnosis">${alt.diagnosis}</div>
+                                <div style="font-size: 0.75rem; color: ${color}; margin-top: 0.25rem;">${alt.urgency.toUpperCase()}</div>
+                            </div>
+                            <div class="alt-confidence">${(alt.confidence * 100).toFixed(1)}%</div>
+                        </div>
+                    `;
+                });
+                output += `</div>`;
+            }
+            
+            outputContent.innerHTML = output;
+            
+            // Animate confidence score
+            animateConfidence(result.confidence);
+            
+            // Display reasoning trace with typewriter effect
+            displayReasoning(result.why_explanation, result.how_explanation);
+        }
+
+        function animateConfidence(confidence) {
+            const display = document.getElementById('confidence-display');
+            const target = confidence * 100;
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    display.textContent = `${target.toFixed(1)}%`;
+                    clearInterval(timer);
+                } else {
+                    display.textContent = `${current.toFixed(1)}%`;
+                }
+            }, 20);
+        }
+
+        function displayReasoning(whyExplanation, howExplanation) {
+            const reasoningContent = document.getElementById('reasoning-content');
+            reasoningContent.innerHTML = '';
+            
+            const allLines = [];
+            
+            // Parse WHY explanation
+            if (whyExplanation) {
+                whyExplanation.split('\n').forEach(line => {
+                    if (line.trim()) allLines.push(line);
+                });
+            }
+            
+            // Add divider
+            allLines.push('─────────────────────────────────────');
+            
+            // Parse HOW explanation
+            if (howExplanation) {
+                howExplanation.split('\n').forEach(line => {
+                    if (line.trim()) allLines.push(line);
+                });
+            }
+            
+            // Typewriter effect
+            allLines.forEach((line, index) => {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = 'reasoning-line';
+                    
+                    // Color code by prefix
+                    if (line.includes('[STEP]')) div.classList.add('step');
+                    else if (line.includes('[MATCH]')) div.classList.add('match');
+                    else if (line.includes('[CONFLICT]')) div.classList.add('conflict');
+                    else if (line.includes('[RESULT]')) div.classList.add('result');
+                    else if (line.includes('[URGENCY]')) div.classList.add('urgency');
+                    else if (line.includes('[CONFIDENCE]')) div.classList.add('confidence');
+                    
+                    div.textContent = line;
+                    reasoningContent.appendChild(div);
+                    reasoningContent.scrollTop = reasoningContent.scrollHeight;
+                }, index * 100);
+            });
+        }
+        */
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
+    <!-- Inference Overlay -->
+    <div id="inference-overlay" class="inference-overlay hidden">
+        <div class="inference-backdrop"></div>
+        <canvas id="ecg-canvas" class="ecg-canvas"></canvas>
+        <div id="status-text" class="status-text processing">PROCESSING...</div>
+        <div class="floating-panels">
+            <div id="diagnosis-panel" class="floating-panel diagnosis-panel"></div>
+            <div id="reasoning-panel" class="floating-panel reasoning-panel"></div>
+        </div>
+        <button id="close-overlay" class="close-overlay-btn" aria-label="Close overlay">×</button>
+    </div>
+</body>
+</html>
